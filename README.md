@@ -128,7 +128,8 @@ You need Node.js 22 or newer.
 ```bash
 npm install       # three.js, common, the shared-session layer, Trystero and IWER, copied into public/vendor/ by common's tools/vendor.mjs from vendor.json
 npm start         # http://localhost:8094/
-npm test          # node --test: the config, where you may walk, the way back's address, the vendor list, the page
+npm test          # node --test: the config, where you may walk, the way back's address, the vendor list, the page, and tsc's check of public/js/
+npm run types     # tsc's check alone
 npm run preview   # public/hallway-preview.jpg and public/social.jpg, in headless Chrome
 ```
 
@@ -137,6 +138,12 @@ npm run preview   # public/hallway-preview.jpg and public/social.jpg, in headles
 shows the TV's page (Escape stands in for Back in the card, and `hallwayTV.menu()` in the console
 for Menu). For a Quest or the TV over adb, `adb reverse tcp:8094 tcp:8094` and start the server on
 IPv4 (`npm start -- --host 127.0.0.1`).
+
+`npm test` type-checks `public/js/` with TypeScript, from the modules' JSDoc (`tsconfig.json`:
+`allowJs`, `checkJs`, `noEmit`), against three.js's types and common's and the shared session's.
+Nothing is built: the page is served as it is, and the import map stays. What TypeScript's DOM
+library leaves out is in `types/globals.d.ts`. The check isn't `strict` yet; that comes a file at a
+time, and `tools/` and `test/` come later.
 
 To try the way in and out locally, serve the Hallway's checkout as well (on 8088) and open the room
 as its door would:
@@ -169,7 +176,8 @@ repository), then:
    `description`, `sign`, `url` (`https://ariamokr.github.io/<repository>/`), `size`, `colors`, the
    `window`'s wall and the sky's `skyYaw` (common's README, "A room's yaw"), the dev server's `port`
    (clear of the other sites' ports), and the doorway's `glow`. Then make the room your own in the
-   rest of `public/js/`, keeping what the TV's remote needs ("On a TV", above).
+   rest of `public/js/`, keeping what the TV's remote needs ("On a TV", above); `npm test`
+   type-checks it ("Running it", below).
 2. **package.json's name**: the new `id`, and its `description`, `homepage` and `repository` to
    match.
 3. **index.html**: the `<title>`, the `<meta name="description">` (word for word the config's
@@ -207,8 +215,8 @@ repository's name and the subtitle is the page's description word for word.
 ## Publishing
 
 `.github/workflows/pages.yml` publishes `public/` to GitHub Pages on every push to `main`, after
-the tests, through the sites' workflow in [AriaMoKr/common](https://github.com/AriaMoKr/common)
-(`v0.6.1`, on Node 24). Every URL in the page is relative, so it works under any repository's path.
+the tests (tsc's check among them), through the sites' workflow in
+[AriaMoKr/common](https://github.com/AriaMoKr/common) (`v0.6.2`, on Node 24). Every URL in the page is relative, so it works under any repository's path.
 
 ## License
 
