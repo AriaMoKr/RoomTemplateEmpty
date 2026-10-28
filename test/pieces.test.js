@@ -133,8 +133,8 @@ test('each is on the page too: On the walls, a link where it leads, a button tha
     o.pieceHref = (i) => `https://example.org/${i}?room=k3vd-q8hn`;
     o.refreshLinks();
     assert.equal(uses[1].getAttribute('href'), 'https://example.org/1?room=k3vd-q8hn');
-    // An empty room has no list.
-    assert.equal(new Overlay(ROOM, way).walls, null);
+    // A room with nothing on its walls has no list.
+    assert.equal(new Overlay({ ...ROOM, pieces: [] }, way).walls, null);
   } finally {
     remove();
   }
