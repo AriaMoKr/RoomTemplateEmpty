@@ -26,6 +26,9 @@ As in the Hallway:
 | Gamepad | right stick | left stick (click it in to hurry) | aim the dot at the doorway and press A, or walk into it | the **Wave** button |
 | TV remote (below, "On a TV") | ←/→ turn | ↑/↓ | the dot on the doorway and OK, or walk into it; or Back | **Wave** in the card (Menu) |
 
+Whatever hangs on the walls (below, "On the walls") is chosen as the doorway is: you walk up to it,
+and on through it when it leads somewhere.
+
 The walls stop you. **Fullscreen** and **Enter VR** are at the bottom right (not on a TV). The **control panel**
 by the doorway holds Enter or exit VR, how to move and turn in VR (Smooth or Teleport, Snap or
 Smooth), the comfort settings below, and Start or Leave shared session. The card at the top left
@@ -78,6 +81,44 @@ same room here, as `roomtemplateempty`; the others in here are drawn by the laye
 its address (on a TV the card shows it, to open on a phone or a computer), **Wave** (or a grip in
 VR) waves to everyone in it, and the card has your name in it, to change. The doorway back carries
 the session into the Hallway.
+
+## On the walls
+
+What hangs on a room's walls is in its config, `pieces`: none in this empty room. Each is a framed
+picture with its title on a label under it (over it when it hangs low), and it may lead somewhere.
+Choose one (click or tap it, point at it in VR and pull the trigger, or put the dot on it and press A
+or OK) and you walk up to it; one with a `link` then takes you there as the doorway takes you back,
+fading out, the shared session carried on (in VR, or with less motion, at once). The card lists them
+under **On the walls**: the ones that lead somewhere as links, the rest as buttons that walk you up to
+them, each with its description.
+
+The way out is common's `hallLink` (its README, "Another hall"): the place gets `back`, this room's
+address at `?from=<the piece's id>`, and `backname`, the room's title, so a place that reads the door
+contract offers the way back here by name. Coming back by it you stand in front of the piece, facing
+into the room, and the doorway still leads where it did (the way back kept for the tab). In VR, Quest
+Browser hands the place the immersive session as it does the Hallway's rooms, when both are on
+`ariamokr.github.io` and the place takes it.
+
+```js
+pieces: [
+  {
+    id: 'studio',                 // its own, 1–32 of a–z, 0–9 and - (?from=studio comes back to it), not 'hallway'
+    wall: 'left',                 // 'left', 'right' or 'far', facing in from the doorway
+    at: 2,                        // metres along the wall from its middle, to the right as one faces it
+    y: 1.5,                       // its middle's height
+    width: 1.2, height: 0.6,      // the picture's size; the frame goes round it
+    image: 'gallery/studio.jpg',  // relative to the page (in public/), cropped from its middle to fit
+    title: 'The studio',          // on its label, and in the card
+    description: 'VARTISTE, a painting studio in VR.', // in the card, and for screen readers
+    link: 'https://ariamokr.github.io/vartiste/',      // where it leads; leave it out for a picture
+  },
+],
+```
+
+`npm test` checks that each fits: on its wall, over the skirting, under the ceiling, clear of the
+window and of the others, with its picture in `public/` (`pieceProblems` in `room.js` says what is
+wrong). The frames are in the room's wood and the labels share one mesh, but each picture is a draw
+call and a texture of its own, against the TV's budget ("On a TV").
 
 ## On a TV
 
@@ -175,7 +216,8 @@ repository), then:
    changes: its `id` (its door's id in the Hallway, lower case, 1–32 of a–z, 0–9 and -), `title`,
    `description`, `sign`, `url` (`https://ariamokr.github.io/<repository>/`), `size`, `colors`, the
    `window`'s wall and the sky's `skyYaw` (common's README, "A room's yaw"), the dev server's `port`
-   (clear of the other sites' ports), and the doorway's `glow`. Then make the room your own in the
+   (clear of the other sites' ports), the doorway's `glow`, and what hangs on its walls, `pieces`
+   ("On the walls", above). Then make the room your own in the
    rest of `public/js/`, keeping what the TV's remote needs ("On a TV", above); `npm test`
    type-checks it ("Running it", below).
 2. **package.json's name**: the new `id`, and its `description`, `homepage` and `repository` to
@@ -216,7 +258,7 @@ repository's name and the subtitle is the page's description word for word.
 
 `.github/workflows/pages.yml` publishes `public/` to GitHub Pages on every push to `main`, after
 the tests (tsc's check among them), through the sites' workflow in
-[AriaMoKr/common](https://github.com/AriaMoKr/common) (`v0.6.2`, on Node 24). Every URL in the page is relative, so it works under any repository's path.
+[AriaMoKr/common](https://github.com/AriaMoKr/common) (`v0.6.3`, on Node 24). Every URL in the page is relative, so it works under any repository's path.
 
 ## License
 
