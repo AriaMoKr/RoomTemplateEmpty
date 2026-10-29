@@ -23,7 +23,7 @@ Published at https://ariamokr.github.io/RoomTemplateEmpty/ from `main` of AriaMo
 npm install          # postinstall: common's tools/vendor.mjs copies what vendor.json lists into public/vendor/ (gitignored)
 npm start            # tools/serve.mjs (common's) on config.js's port, 8094
 npm test             # node --test "test/*.test.js", tsc's check among them (test/types.test.js)
-npm run types        # tsc -p tsconfig.json alone
+npm run types        # tsc -p tsconfig.json, then -p tsconfig.strict.json, alone
 npm run preview      # tools/preview.mjs: public/hallway-preview.jpg and public/social.jpg (headless Chrome)
 ```
 
@@ -73,8 +73,11 @@ Node 22 or newer; CI runs Node 24 (common's Pages workflow). It runs under MSYS2
   radio buttons and checkboxes), the hint (`#hint`, kept clear of the buttons, `_placeHint`), Wave,
   Copy invite link, Fullscreen, Enter VR, the aiming dot, and toasts (`role="status"`, polite). With
   `tv`, Wave is in the card and the invite is text there (`inviteText`), and the hints are the
-  remote's (`tv`, `tv-card`). On a TV, a faded hint is `aria-hidden` (out of TalkBack's reading
-  order) but stays the canvas's description (`aria-describedby`). `presence.js`: the session's status and notices in words.
+  remote's (`tv`, `tv-card`). With pieces, the hints name the pictures (`PIECE_HINTS`, else an
+  empty room's `HINTS`), and on a TV `setAimed(i)` (main.js's frame loop, the piece under the dot)
+  makes the hint's OK say what OK does there, as music's does on the gramophone. On a TV, a faded
+  hint is `aria-hidden` (out of TalkBack's reading order) but stays the canvas's description
+  (`aria-describedby`). `presence.js`: the session's status and notices in words.
 - `preview.js`: the two pictures (`renderPreview`, hung as the hallway hangs its doorways', and
   `renderSocial`, from `socialView`).
 - `main.js`: the visit and the way back (common's `door.js`; `<id>.visit` in sessionStorage),
@@ -102,8 +105,11 @@ Node 22 or newer; CI runs Node 24 (common's Pages workflow). It runs under MSYS2
   unchanged. `test/types.test.js` runs tsc, so `npm test` and the Pages workflow do, and fails
   rather than skips without TypeScript. What TypeScript's DOM library leaves out (WebKit's
   fullscreen names, `window.__room`, `window.roomXrGranted`) is in `types/globals.d.ts`, never
-  served. Not `strict` yet (437 errors with it, nearly all untyped parameters): that comes a file
-  at a time. `tools/` and `test/` wait for `@types/node`.
+  served. `strict` comes a file at a time: `tsconfig.strict.json` (it, with `strict` on) includes
+  only the files that pass it, `config.js` and `presence.js` so far, and `test/types.test.js` runs
+  it too. A file joins its `include` when a change makes it pass; what an included file imports is
+  checked strictly with it. The rest has a few hundred errors with it, nearly all untyped
+  parameters. `tools/` and `test/` wait for `@types/node`.
 - Scripted testing: `window.__room` (THREE, renderer, scene, camera, rig, room, layout, controls,
   overlay, fade, vignette, xrDevice, go, enterVR, together, remote, tv, way, visit, setAccess, access,
   `preview()`, `social()`, `tick(dt, n)`, `ready`, true once the pieces' pictures have loaded or

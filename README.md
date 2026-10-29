@@ -90,7 +90,8 @@ Choose one (click or tap it, point at it in VR and pull the trigger, or put the 
 or OK) and you walk up to it; one with a `link` then takes you there as the doorway takes you back,
 fading out, the shared session carried on (in VR, or with less motion, at once). The card lists them
 under **On the walls**: the ones that lead somewhere as links, the rest as buttons that walk you up to
-them, each with its description.
+them, each with its description. With pieces on the walls, the hints name the pictures too (click,
+tap or aim at one), and on a TV the hint says what OK does with the dot on one ("On a TV").
 
 The way out is common's `hallLink` (its README, "Another hall"): the place gets `back`, this room's
 address at `?from=<the piece's id>`, and `backname`, the room's title, so a place that reads the door
@@ -128,7 +129,10 @@ site full screen in a WebView whose user agent ends ` HallwayTV/<version>`), or 
 through its `tv.js`:
 
 - The arrows walk and turn. OK uses what the dot in the middle of the view is on: the doorway, a
-  button on the panel, or the floor (it walks there).
+  picture on the walls, a button on the panel, or the floor (it walks there). With the dot on a
+  picture, the hint says what OK does there: `OK: The studio` for one that leads somewhere,
+  `OK: walk up to …` for the rest. It comes back for that if it had faded, and fades again when the
+  dot leaves.
 - **Menu** (or holding Back) moves the focus into the card, starting at **← Hallway**. There, up
   and down go from control to control, left and right go through a choice, and OK chooses. The card
   holds Start or Leave shared session; in a session, Wave, your name, and the invite link as text
@@ -170,7 +174,7 @@ You need Node.js 22 or newer.
 npm install       # three.js, common, the shared-session layer, Trystero and IWER, copied into public/vendor/ by common's tools/vendor.mjs from vendor.json
 npm start         # http://localhost:8094/
 npm test          # node --test: the config, where you may walk, the way back's address, the vendor list, the page, and tsc's check of public/js/
-npm run types     # tsc's check alone
+npm run types     # tsc's checks alone
 npm run preview   # public/hallway-preview.jpg and public/social.jpg, in headless Chrome
 ```
 
@@ -183,8 +187,10 @@ IPv4 (`npm start -- --host 127.0.0.1`).
 `npm test` type-checks `public/js/` with TypeScript, from the modules' JSDoc (`tsconfig.json`:
 `allowJs`, `checkJs`, `noEmit`), against three.js's types and common's and the shared session's.
 Nothing is built: the page is served as it is, and the import map stays. What TypeScript's DOM
-library leaves out is in `types/globals.d.ts`. The check isn't `strict` yet; that comes a file at a
-time, and `tools/` and `test/` come later.
+library leaves out is in `types/globals.d.ts`. `strict` comes a file at a time:
+`tsconfig.strict.json` checks only the files that pass it (so far `config.js` and `presence.js`),
+and `npm test` runs it too. A file joins its `include` when a change makes it pass. `tools/` and
+`test/` come later.
 
 To try the way in and out locally, serve the Hallway's checkout as well (on 8088) and open the room
 as its door would:
